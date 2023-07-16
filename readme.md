@@ -8,6 +8,15 @@ python main.py --dataset_reference ascad-variable --dataset_reference_dim 25000 
 
 Check ```main.py``` for more information about command line arguments.
 
+
+To run an example that includes all methods and without calling the arguments from command line:
+
+```
+python example_ascad-variable_vs_ASCAD.py
+```
+
+This example will train a CGAN-SCA structure with ASCADr as reference and ASCADf as target dataset.
+
 #### Datasets ####
 To generate datasets (NOPOI scenario from [1]) allowing reproducibility of our results, please check the available source code from https://github.com/AISyLab/feature_selection_dlsca.
 
