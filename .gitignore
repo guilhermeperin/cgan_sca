@@ -1,5 +1,5 @@
 update.sh
 venv
 .ipynb_checkpoints
-cgan_sca_ascad-variable_vs_ASCAD.ipynb
+../cgan_sca_release/cgan_sca_ascad-variable_vs_ASCAD.ipynb
 .gitignore
