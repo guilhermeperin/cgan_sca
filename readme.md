@@ -9,6 +9,6 @@ python main.py --dataset_reference ascad-variable --dataset_reference_dim 25000 
 Check ```main.py``` for more information about command line arguments.
 
 #### Datasets ####
-To generate datasets (NOPOI scenario from [1]) allowing reproducibility or our results, please check the available source code from https://github.com/AISyLab/feature_selection_dlsca.
+To generate datasets (NOPOI scenario from [1]) allowing reproducibility of our results, please check the available source code from https://github.com/AISyLab/feature_selection_dlsca.
 
 [1] Guilherme Perin, Lichao Wu, Stjepan Picek, "Exploring Feature Selection Scenarios for Deep Learning-based Side-Channel Analysis" (https://tches.iacr.org/index.php/TCHES/article/view/9842).
