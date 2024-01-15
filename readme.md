@@ -9,6 +9,9 @@ streamlit run .\app_main.py
 ```
 
 The Streamlit app already downloads all datasets and has a no-code user interface.
+
+### Webapp interface and options:
+
 ![Example Image](images/webapp1.png)
 
 ## Run CGAN-SCA from code:
