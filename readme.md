@@ -1,5 +1,16 @@
 ### Source code for submission paper "It's a Kind of Magic: A Novel Conditional GAN Framework for Efficient Profiling Side-channel Analysis"
 
+## Run CGAN-SCA with a (no-code) webapp:
+To run the locaweb app to run our CGAN-SCA solution:
+
+```
+pip install -r requirements.txt
+streamlit run .\app_main.py
+```
+
+The Streamlit app already downloads all datasets and has a no-code user interface.
+
+## Run CGAN-SCA from code:
 To run a CGAN-SCA training with a MLP-based profiling attack, run the following command:
 
 ```
