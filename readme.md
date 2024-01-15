@@ -5,7 +5,7 @@ To run the locaweb app to run our CGAN-SCA solution:
 
 ```
 pip install -r requirements.txt
-streamlit run .\app_main.py
+streamlit run .\main_app.py
 ```
 
 The Streamlit app already downloads all datasets and has a no-code user interface.
