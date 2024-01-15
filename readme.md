@@ -9,6 +9,7 @@ streamlit run .\app_main.py
 ```
 
 The Streamlit app already downloads all datasets and has a no-code user interface.
+![Example Image](images/webapp1.png)
 
 ## Run CGAN-SCA from code:
 To run a CGAN-SCA training with a MLP-based profiling attack, run the following command:
