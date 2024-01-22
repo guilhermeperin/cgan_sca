@@ -160,10 +160,10 @@ class SqlAlchemyWrapper:
         # Close the session
         session.close()
 
-        if len(result_dict_list) == 1:
-            return result_dict_list[0]
+        # if len(result_dict_list) == 1:
+        #     return result_dict_list[0]
         if len(result_dict_list) == 0:
-            return None
+            return []
         return result_dict_list
 
     def select_data_by_id(self, table_name, id):

@@ -21,8 +21,8 @@ def generate_nopoi_dpav42(datasets_path, filepath_destination, n_traces, n_sampl
     file_data = open(filepath_data, "r")
     file_lines = file_data.readlines()
 
-    fs = 100000
-    ns = 400000
+    fs = 250000
+    ns = 150000
 
     mask_vector = [3, 12, 53, 58, 80, 95, 102, 105, 150, 153, 160, 175, 197, 202, 243, 252]
 
@@ -37,9 +37,9 @@ def generate_nopoi_dpav42(datasets_path, filepath_destination, n_traces, n_sampl
     masks = np.zeros((n_traces_profiling, 16))
     keys = np.zeros((n_traces_profiling, 16))
 
-    for file_index in range(16):
+    for file_index in range(14):
 
-        for i in range(5000 * file_index, 5000 * file_index + 5000):
+        for p, i in enumerate(range(5000 * file_index, 5000 * file_index + 5000)):
             line = file_lines[i]
 
             bz2_file_name = "DPACV42_{}".format(str(i).zfill(6))
@@ -56,7 +56,7 @@ def generate_nopoi_dpav42(datasets_path, filepath_destination, n_traces, n_sampl
             for b in range(16):
                 masks[i][b] = int(mask_vector[int(offset3[b] + 1) % 16])
 
-            progress_bar.progress(i/5000, text=f"{i}/5000 traces processed in {filepath}")
+            progress_bar.progress(p / 5000, text=f"{p}/5000 traces processed in {filepath}")
 
     trace_group = out_file.create_group("Profiling_traces")
     trace_group.create_dataset(name="traces", data=samples, dtype=samples.dtype)
@@ -78,24 +78,24 @@ def generate_nopoi_dpav42(datasets_path, filepath_destination, n_traces, n_sampl
 
     for file_index in range(14, 16):
 
-        for i in range(5000 * file_index, 5000 * file_index + 5000):
+        for p, i in enumerate(range(5000 * file_index, 5000 * file_index + 5000)):
             line = file_lines[i]
 
             bz2_file_name = "DPACV42_{}".format(str(i).zfill(6))
             filepath = f"{datasets_path}/DPA_contestv4_2/k{str(file_index).zfill(2)}/{bz2_file_name}.trc.bz2"
             data = bz2.BZ2File(filepath).read()  # get the decompressed data
 
-            samples[i] = winres(np.array(np.frombuffer(data[357:len(data) - 357], dtype='int8')[fs: fs + ns]))
+            samples[i - 70000] = winres(np.array(np.frombuffer(data[357:len(data) - 357], dtype='int8')[fs: fs + ns]))
 
-            keys[i] = np.frombuffer(bytearray.fromhex(line[0:32]), np.uint8)
-            plaintexts[i] = np.frombuffer(bytearray.fromhex(line[33:65]), np.uint8)
-            ciphertexts[i] = np.frombuffer(bytearray.fromhex(line[66:98]), np.uint8)
+            keys[i - 70000] = np.frombuffer(bytearray.fromhex(line[0:32]), np.uint8)
+            plaintexts[i - 70000] = np.frombuffer(bytearray.fromhex(line[33:65]), np.uint8)
+            ciphertexts[i - 70000] = np.frombuffer(bytearray.fromhex(line[66:98]), np.uint8)
 
             offset3 = [int(s, 16) for s in line[133:149]]
             for b in range(16):
-                masks[i][b] = int(mask_vector[int(offset3[b] + 1) % 16])
+                masks[i - 70000][b] = int(mask_vector[int(offset3[b] + 1) % 16])
 
-            progress_bar.progress(i/5000, text=f"{i}/5000 traces processed in {filepath}")
+            progress_bar.progress(p / 5000, text=f"{p}/5000 traces processed in {filepath}")
 
     trace_group = out_file.create_group("Attack_traces")
     trace_group.create_dataset(name="traces", data=samples, dtype=samples.dtype)

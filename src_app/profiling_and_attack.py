@@ -197,3 +197,46 @@ def attack(dataset, dataset_filepath, generator_model, features_dim, mlp_layers,
                                          dataset.correct_key_attack, 2000)
     pi = perceived_information(predictions, dataset.attack_labels, dataset.classes)
     return ge, nt, pi, ge_vector
+
+
+def attack_pretrained(dataset_ref, dataset_ref_labels, dataset, dataset_filepath, generator_model, features_dim,
+                      mlp_layers, mlp_neurons, mlp_activation, progress_bar_features_extraction=None,
+                      progress_bar_epochs=None):
+    progress_callback = ProgressCallback(progress_bar_epochs, 100)
+
+    attack_model = mlp(dataset.classes, features_dim, mlp_layers, mlp_neurons, mlp_activation)
+    attack_model.fit(
+        x=dataset_ref,
+        y=to_categorical(dataset_ref_labels, num_classes=dataset.classes),
+        batch_size=400,
+        verbose=2,
+        epochs=100,
+        shuffle=True,
+        callbacks=[progress_callback])
+
+    features_target_profiling_syn, features_target_attack_syn = extract_features(generator_model, features_dim, dataset,
+                                                                                 dataset_filepath,
+                                                                                 progress_bar_features_extraction)
+
+    scaler = StandardScaler()
+    features_target_profiling_syn = scaler.fit_transform(features_target_profiling_syn)
+    features_target_attack_syn = scaler.transform(features_target_attack_syn)
+
+    attack_model.fit(
+        x=features_target_profiling_syn,
+        y=to_categorical(dataset.profiling_labels, num_classes=dataset.classes),
+        batch_size=400,
+        verbose=2,
+        epochs=100,
+        shuffle=True,
+        validation_data=(
+            features_target_attack_syn, to_categorical(dataset.attack_labels, num_classes=dataset.classes)),
+        callbacks=[progress_callback])
+
+    """ Predict the trained MLP with target/attack measurements """
+    predictions = attack_model.predict(features_target_attack_syn)
+    """ Check if we are able to recover the key from the target/attack measurements """
+    ge, ge_vector, nt = guessing_entropy(predictions, dataset.labels_key_hypothesis_attack,
+                                         dataset.correct_key_attack, 2000)
+    pi = perceived_information(predictions, dataset.attack_labels, dataset.classes)
+    return ge, nt, pi, ge_vector

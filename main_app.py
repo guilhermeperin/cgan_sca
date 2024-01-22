@@ -128,57 +128,54 @@ with tab2:
 
     progress_bar = st.progress(0)
 
-    if st.button("Download ASCADf Dataset", key="downaload_ascadf"):
-        if not os.path.exists(os.path.join(datasets_path, ascadf_dataset_zip)):
-            download_file(url_ascadf, ascadf_dataset_zip, progress_bar)
+    if st.button("Download ASCADf Dataset", key="download_ascadf"):
+        if not os.path.exists(os.path.join(datasets_path, "ASCAD_nopoi_window_20.h5")):
+            if not os.path.exists(os.path.join(datasets_path, ascadf_dataset_zip)):
+                download_file(url_ascadf, ascadf_dataset_zip, progress_bar)
 
-            file_path_dataset = os.path.join(current_directory, ascadf_dataset_zip)
-            destination_directory = 'datasets'
-            shutil.move(file_path_dataset, destination_directory)
+                file_path_dataset = os.path.join(current_directory, ascadf_dataset_zip)
+                destination_directory = 'datasets'
+                shutil.move(file_path_dataset, destination_directory)
 
-        if os.path.exists(os.path.join(datasets_path, ascadf_dataset_zip)):
+            if os.path.exists(os.path.join(datasets_path, ascadf_dataset_zip)):
 
-            if not os.path.exists(os.path.join(datasets_path, "ASCAD_data\\ASCAD_databases\\ATMega8515_raw_traces.h5")):
-                zip_file_path = os.path.join(datasets_path, ascadf_dataset_zip)
+                if not os.path.exists(
+                        os.path.join(datasets_path, "ASCAD_data\\ASCAD_databases\\ATMega8515_raw_traces.h5")):
+                    zip_file_path = os.path.join(datasets_path, ascadf_dataset_zip)
+                    unzip_file(zip_file_path, datasets_path)
 
-                if not os.path.exists(datasets_path):
-                    os.makedirs(datasets_path)
+                if not os.path.exists(os.path.join(datasets_path, "ATMega8515_raw_traces.h5")):
+                    src_file = os.path.join(datasets_path, "ASCAD_data\\ASCAD_databases\\ATMega8515_raw_traces.h5")
+                    shutil.move(src_file, datasets_path)
 
-                unzip_file(zip_file_path, datasets_path)
-
-            if not os.path.exists(os.path.join(datasets_path, "ATMega8515_raw_traces.h5")):
-                src_file = os.path.join(datasets_path, "ASCAD_data\\ASCAD_databases\\ATMega8515_raw_traces.h5")
-                shutil.move(src_file, datasets_path)
-
-            if not os.path.exists(os.path.join(datasets_path, "ASCAD_nopoi_window_20.h5")):
                 progress_bar_ascadf = st.progress(0)
                 generate_nopoi_ascadf(os.path.join(datasets_path, "ATMega8515_raw_traces.h5"),
                                       os.path.join(datasets_path, "ASCAD_nopoi_window_20.h5"), 60000, 100000,
                                       progress_bar_ascadf, window=20)
             else:
-                st.success(f"ASCADf ({ascadf_dataset_zip}) file already downloaded.")
+                st.success(f"ASCADf dataset file already downloaded.")
 
     url_ascadr = "https://static.data.gouv.fr/resources/ascad-atmega-8515-variable-key/20190730-071646/atmega8515-raw-traces.h5"
     ascadr_dataset = "atmega8515-raw-traces.h5"
 
     progress_bar = st.progress(0)
 
-    if st.button("Download ASCADr Dataset", key="downaload_ascadr"):
-        if not os.path.exists(os.path.join(datasets_path, ascadr_dataset)):
-            download_file(url_ascadr, ascadr_dataset, progress_bar)
-
-            file_path_dataset = os.path.join(current_directory, ascadr_dataset)
-            destination_directory = 'datasets'
-            shutil.move(file_path_dataset, destination_directory)
-
+    if st.button("Download ASCADr Dataset", key="download_ascadr"):
         if not os.path.exists(os.path.join(datasets_path, "ascad-variable_nopoi_window_20.h5")):
+            if not os.path.exists(os.path.join(datasets_path, ascadr_dataset)):
+                download_file(url_ascadr, ascadr_dataset, progress_bar)
+
+                file_path_dataset = os.path.join(current_directory, ascadr_dataset)
+                destination_directory = 'datasets'
+                shutil.move(file_path_dataset, destination_directory)
+
             progress_bar_ascadr = st.progress(0)
             generate_nopoi_ascadr(os.path.join(datasets_path, "atmega8515-raw-traces.h5"),
                                   os.path.join(datasets_path, "ascad-variable_nopoi_window_20.h5"), 200000, 250000,
                                   progress_bar_ascadr, window=20)
             st.success(f"ASCADr dataset successfully downloaded and created.")
         else:
-            st.success(f"ASCADr ({ascadr_dataset}) file already downloaded.")
+            st.success(f"ASCADr dataset file already downloaded.")
 
     url_eshard = "https://gitlab.com/eshard/nucleo_sw_aes_masked_shuffled/-/raw/main/Nucleo_AES_masked_non_shuffled.ets"
     eshard_dataset_ets = "eshard.ets"
@@ -186,7 +183,7 @@ with tab2:
 
     progress_bar = st.progress(0)
 
-    if st.button("Download ESHARD-128 Dataset", key="downaload_eshard"):
+    if st.button("Download ESHARD-128 Dataset", key="download_eshard"):
         if not os.path.exists(os.path.join(datasets_path, eshard_dataset_ets)):
             download_file(url_eshard, eshard_dataset_ets, progress_bar)
 
@@ -198,7 +195,7 @@ with tab2:
             convert_eshard_to_h5(datasets_path, os.path.join(datasets_path, eshard_dataset_ets))
             st.success(f"ESHARD-AES128 dataset successfully downloaded and created.")
         else:
-            st.success(f"ESHARD-AES128 ({eshard_dataset}) file already downloaded.")
+            st.success(f"ESHARD-AES128 dataset file already downloaded.")
 
     # url_dpav42 = "http://aisylabdatasets.ewi.tudelft.nl/dpav42/dpa_v42_nopoi_window_20.h5"
     dpav42_dataset = "dpa_v42_nopoi_window_20.h5"
@@ -224,23 +221,30 @@ with tab2:
     url_dpav42_16 = "DPA_contestv4_2_k15.zip"
     url_dpav42_17 = "dpav4_2_index.txt"
 
-    if st.button("Download DPAv42 Dataset", key="downaload_dpav42"):
-        for dataset_dpav42 in [url_dpav42_1, url_dpav42_2, url_dpav42_3, url_dpav42_4, url_dpav42_5, url_dpav42_6,
-                               url_dpav42_7, url_dpav42_8, url_dpav42_9, url_dpav42_10, url_dpav42_11, url_dpav42_12,
-                               url_dpav42_13, url_dpav42_14, url_dpav42_15, url_dpav42_16, url_dpav42_17]:
-            if not os.path.exists(os.path.join(datasets_path, dataset_dpav42)):
-                download_file(f"{url_dpav42}/{dataset_dpav42}", dataset_dpav42, progress_bar)
-
-                file_path_dataset = os.path.join(current_directory, dataset_dpav42)
-                destination_directory = 'datasets'
-                shutil.move(file_path_dataset, destination_directory)
+    if st.button("Download DPAv42 Dataset", key="download_dpav42"):
         if not os.path.exists(os.path.join(datasets_path, dpav42_dataset)):
+            for d_i, dataset_dpav42 in enumerate(
+                    [url_dpav42_1, url_dpav42_2, url_dpav42_3, url_dpav42_4, url_dpav42_5, url_dpav42_6,
+                     url_dpav42_7, url_dpav42_8, url_dpav42_9, url_dpav42_10, url_dpav42_11, url_dpav42_12,
+                     url_dpav42_13, url_dpav42_14, url_dpav42_15, url_dpav42_16, url_dpav42_17]):
+                if not os.path.exists(os.path.join(datasets_path, dataset_dpav42)):
+                    download_file(f"{url_dpav42}/{dataset_dpav42}", dataset_dpav42, progress_bar)
+
+                    file_path_dataset = os.path.join(current_directory, dataset_dpav42)
+                    destination_directory = 'datasets'
+                    shutil.move(file_path_dataset, destination_directory)
+                else:
+                    if dataset_dpav42 != "dpav4_2_index.txt":
+                        if not os.path.exists(os.path.join(datasets_path, f"DPA_contestv4_2/k{str(d_i).zfill(2)}")):
+                            zip_file_path = os.path.join(datasets_path, dataset_dpav42)
+                            unzip_file(zip_file_path, datasets_path)
+
             progress_bar_dpav42 = st.progress(0)
-            generate_nopoi_dpav42(datasets_path, os.path.exists(os.path.join(datasets_path, dpav42_dataset)),
+            generate_nopoi_dpav42(datasets_path, os.path.join(datasets_path, dpav42_dataset),
                                   80000, 1704046, progress_bar_dpav42, window=20)
             st.success(f"DPAv42 dataset successfully downloaded and created.")
         else:
-            st.success(f"DPAv42 ({dataset_dpav42}) file already downloaded.")
+            st.success(f"DPAv42 dataset file already downloaded.")
 
     url_chesctf1 = "https://zenodo.org/record/3733418/files/PinataAcqTask2.1_10k_upload.trs"
     url_chesctf2 = "https://zenodo.org/record/3733418/files/PinataAcqTask2.2_10k_upload.trs"
@@ -256,7 +260,7 @@ with tab2:
     text_download_chesctf = st.empty()
     progress_bar_chesctf = st.empty()
 
-    if st.button("Download CHES CTF 2018 Dataset", key="downaload_chesctf"):
+    if st.button("Download CHES CTF 2018 Dataset", key="download_chesctf"):
         for dataset_chesctf in [chesctf_dataset1, chesctf_dataset2, chesctf_dataset3, chesctf_dataset4]:
             if not os.path.exists(os.path.join(datasets_path, dataset_chesctf)):
                 text_download_chesctf = st.write(f"Downloading {dataset_chesctf} dataset")
@@ -576,7 +580,7 @@ with tab5:
 
                 hp_gen = best_archs[reference_dataset_name][target_dataset_name]["generator"]
 
-                layers_gen = st.slider("Number of dense layers", min_value=1, max_value=6, value=hp_gen['layers'], )
+                layers_gen = st.slider("Number of dense layers", min_value=1, max_value=6, value=hp_gen['layers'])
                 neurons_gen = np.zeros(layers_gen)
                 for layer in range(layers_gen):
                     if layer < len(hp_gen['neurons']):
@@ -656,7 +660,7 @@ with tab6:
         with prof_attack_model_col2:
             mlp_neurons = st.slider("Neurons", min_value=10, max_value=400, value=100)
         with prof_attack_model_col3:
-            mlp_activation = st.selectbox('Activation Function', ('leakyrelu', 'relu', 'selu', 'tanh',))
+            mlp_activation = st.selectbox('Activation Function', ('leakyrelu', 'relu', 'selu', 'elu', 'tanh',))
 
     max_snr_share_1 = []
     max_snr_share_2 = []
@@ -834,6 +838,14 @@ with tab6:
                                        cgan_features, mlp_layers, mlp_neurons, mlp_activation,
                                        progress_bar_features_extraction=progress_bar_features_extraction,
                                        progress_bar_epochs=progress_bar_epochs)
+
+        # ge, nt, pi, ge_vector = attack_pretrained(st.session_state.reference_features,
+        #                                           st.session_state.reference_labels,
+        #                                           st.session_state.target_dataset, target_dataset_filepath, generator,
+        #                                           cgan_features, mlp_layers, mlp_neurons, mlp_activation,
+        #                                           progress_bar_features_extraction=progress_bar_features_extraction,
+        #                                           progress_bar_epochs=progress_bar_epochs)
+
         ge_cgansca.append(ge)
         nt_cgansca.append(nt)
         pi_cgansca.append(pi)
@@ -1162,7 +1174,16 @@ with tab7:
     st.write("**All your results**")
     with st.container(border=True):
         db_attacks = db_class.select_data("attacks")
+
+        # Modify select_attack_options to store tuples
         select_attack_options = []
         for db_attack in db_attacks:
-            select_attack_options.append(f"{db_attack.reference} vs {db_attack.target} ({db_attack.datetime})")
-        st.selectbox('Analyses', select_attack_options)
+            option_text = f"{db_attack.reference} vs {db_attack.target} ({db_attack.datetime})"
+            option_tuple = (option_text, db_attack.id)  # Include db_attack.id in the tuple
+            select_attack_options.append(option_tuple)
+
+        # Use the modified select_attack_options in the st.selectbox
+        selected_option = st.selectbox('Analyses', select_attack_options)
+
+        # Access the db_attack.id corresponding to the selected option
+        selected_attack_id = selected_option[1]
